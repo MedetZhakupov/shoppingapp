@@ -121,7 +121,16 @@ class HomeActivity : AppCompatActivity() {
         }
 
         if (newState.page != previouslyShownPage) {
+            removeFragmentFromBackStack()
             newState.page.feature.show()
+        }
+    }
+
+    private fun removeFragmentFromBackStack() {
+        val currentFragment = supportFragmentManager.fragments.lastOrNull()
+        if (currentFragment is ProductDetailsFragment) {
+            supportFragmentManager.beginTransaction().remove(currentFragment).commit()
+            supportFragmentManager.popBackStack()
         }
     }
 

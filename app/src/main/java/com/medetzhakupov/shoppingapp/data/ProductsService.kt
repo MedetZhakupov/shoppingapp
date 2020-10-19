@@ -1,6 +1,5 @@
 package com.medetzhakupov.shoppingapp.data
 
-import android.content.Context
 import android.content.res.Resources
 import com.medetzhakupov.shoppingapp.R
 import com.medetzhakupov.shoppingapp.data.model.Product
