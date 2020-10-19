@@ -1,5 +1,12 @@
 <resources>
     <string name="app_name">Shopping App</string>
     <string name="home">Home</string>
+    <string name="products">Products</string>
     <string name="shopping_cart">Shopping Cart</string>
+    <string name="material">Material: %s</string>
+    <string name="number_of_seats">Number of seats: %d</string>
+    <string name="color">Color: %s</string>
+    <string name="added_to_cart_message">Added to cart</string>
+    <string name="add_to_cart">Add to cart</string>
+    <string name="total_amount">Total: %s</string>
 </resources>

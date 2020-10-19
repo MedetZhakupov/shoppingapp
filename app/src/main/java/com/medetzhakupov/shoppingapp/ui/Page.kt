@@ -1,6 +1,7 @@
 package com.medetzhakupov.shoppingapp.ui
 
 import android.os.Parcelable
+import com.medetzhakupov.shoppingapp.data.model.Product
 import kotlinx.android.parcel.Parcelize
 
 //
@@ -9,4 +10,5 @@ import kotlinx.android.parcel.Parcelize
 sealed class Page: Parcelable {
     @Parcelize object Products: Page()
     @Parcelize object ShoppingCart: Page()
+    @Parcelize data class ProductDetails(val product: Product): Page()
 }

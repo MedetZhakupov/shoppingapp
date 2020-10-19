@@ -1,8 +1,12 @@
 package com.medetzhakupov.shoppingapp
 
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentFactory
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.*
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import java.util.concurrent.atomic.AtomicReference
@@ -29,71 +33,17 @@ inline fun fragmentFactory(crossinline makeFragment: (Class<out Fragment>) -> Fr
     }
 }
 
-class AtomicMutableLiveData<T>(initialValue: T) : MutableLiveData<T>() {
-    private val state = AtomicReference(initialValue)
-
-    init {
-        super.postValue(initialValue)
-    }
-
-    override fun setValue(value: T) {
-        state.set(value)
-        super.setValue(value)
-    }
-
-    override fun postValue(value: T) {
-        state.set(value)
-        super.postValue(value)
-    }
-
-    /**
-     * Atomically updates the current value with the results of applying the given [update] function
-     */
-    fun postUpdate(update: (T) -> T) {
-        val updatedValue = state.updateAndGetCompat(update)
-        super.postValue(updatedValue)
-    }
-
-    /**
-     * Atomically updates the current value with the results of applying the given [update] function
-     * only if the given [condition] returns true for the current value
-     */
-    fun compareAndPostUpdate(condition: (T) -> Boolean, update: (T) -> T): Boolean {
-        var wasConditionSatisfied = false
-
-        val updatedValue = state.updateAndGetCompat { previousValue ->
-            wasConditionSatisfied = condition(previousValue)
-
-            if (wasConditionSatisfied) {
-                update(previousValue)
-            } else {
-                previousValue
-            }
-        }
-
-        if (wasConditionSatisfied) {
-            super.postValue(updatedValue)
-        }
-
-        return wasConditionSatisfied
-    }
-}
-
 /**
- * Atomically updates the current value with the results of
- * applying the given function, returning the updated value. The
- * function should be side-effect-free, since it may be re-applied
- * when attempted updates fail due to contention among threads.
- *
- * @param updateFunction a side-effect-free function
- * @return the updated value
+ * Runs suspend function in background and returns results in main thread. If fails simply executes onFailure block
  */
-fun <V> AtomicReference<V>.updateAndGetCompat(updateFunction: (V) -> V): V {
-    var prev: V
-    var next: V
-    do {
-        prev = get()
-        next = updateFunction.invoke(prev)
-    } while (!compareAndSet(prev, next))
-    return next
-}
+@Suppress("detekt.TooGenericExceptionCaught", "detekt.RethrowCaughtException") // No error specific handling needed for this module
+internal fun CoroutineScope.runInBackground(job: suspend () -> Unit, onFailure: (exception: Exception) -> Unit) =
+    launch {
+        try {
+            job.invoke()
+        } catch (exception: CancellationException) {
+            throw exception
+        } catch (exception: Exception) {
+            onFailure.invoke(exception)
+        }
+    }

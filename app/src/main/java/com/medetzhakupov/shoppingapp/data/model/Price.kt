@@ -12,5 +12,5 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class Price(
     @Json(name = "currency") val currency: String,
-    @Json(name = "value") val value: Int
+    @Json(name = "value") val value: Double
 ) : Parcelable
