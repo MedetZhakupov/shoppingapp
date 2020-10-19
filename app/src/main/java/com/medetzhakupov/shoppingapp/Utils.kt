@@ -32,18 +32,3 @@ inline fun fragmentFactory(crossinline makeFragment: (Class<out Fragment>) -> Fr
         return makeFragment(fragmentClass) ?: super.instantiate(classLoader, className)
     }
 }
-
-/**
- * Runs suspend function in background and returns results in main thread. If fails simply executes onFailure block
- */
-@Suppress("detekt.TooGenericExceptionCaught", "detekt.RethrowCaughtException") // No error specific handling needed for this module
-internal fun CoroutineScope.runInBackground(job: suspend () -> Unit, onFailure: (exception: Exception) -> Unit) =
-    launch {
-        try {
-            job.invoke()
-        } catch (exception: CancellationException) {
-            throw exception
-        } catch (exception: Exception) {
-            onFailure.invoke(exception)
-        }
-    }

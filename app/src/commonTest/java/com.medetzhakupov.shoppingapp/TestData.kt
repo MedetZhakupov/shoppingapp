@@ -12,7 +12,7 @@ val testProducts = listOf(
     Product(
         id = "1",
         name = "Henriksdal",
-        price = Price(value = 499, currency = "kr"),
+        price = Price(value = 499.0, currency = "kr"),
         info = Info(material = "wood with cover", color = "white"),
         type = ProductType.CHAIR,
         imageUrl = "https://shop.static.ingka.ikea.com/PIAimages/0462849_PE608354_S4.JPG"
@@ -20,7 +20,7 @@ val testProducts = listOf(
     Product(
         id = "2",
         name = "Lidhult",
-        price = Price(value = 1035, currency = "kr"),
+        price = Price(value = 1035.0, currency = "kr"),
         info = Info(numberOfSeats = 4, color = "beige"),
         type = ProductType.COUCH,
         imageUrl = "https://shop.static.ingka.ikea.com/PIAimages/0667779_PE714073_S4.JPG"
